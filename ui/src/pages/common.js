@@ -771,6 +771,7 @@ function init_module_processing(rows, hook_name, hook_ui_name, module_name, data
     type_map = {
         "ioc": "ioc_id",
         "asset": "asset_id",
+        "recommendation": "recommendation_id",
         "task": "task_id",
         "global_task": "task_id",
         "evidence": "id"
@@ -814,7 +815,7 @@ function load_menu_mod_options_modal(element_id, data_type, anchor) {
 }
 
 function get_row_id(row) {
-    let ids_map = ["ioc_id","asset_id","task_id","id"];
+    let ids_map = ["ioc_id","asset_id","recommendation_id","task_id","id"];
     for (let id in ids_map) {
         if (row[ids_map[id]] !== undefined) {
             return row[ids_map[id]];
@@ -1161,6 +1162,7 @@ function load_menu_mod_options(data_type, table, deletion_fn, additionalOptions 
     };
 
     let datatype_map = {
+        'recommendation': 'recommendations',
         'task': 'tasks',
         'ioc': 'ioc',
         'evidence': 'evidences',

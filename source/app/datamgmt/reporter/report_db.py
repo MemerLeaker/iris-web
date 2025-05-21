@@ -30,6 +30,7 @@ from app.models.models import CaseAssets
 from app.models.models import CaseEventsAssets
 from app.models.models import CaseEventsIoc
 from app.models.models import CaseReceivedFile
+from app.models.models import CaseRecommendations
 from app.models.models import CaseTasks
 from app.models.cases import Cases
 from app.models.cases import CasesEvent
@@ -64,6 +65,7 @@ def export_case_json_extended(case_id):
     export['timeline'] = export_case_tm_json_extended(case_id)
     export['iocs'] = export_case_iocs_json_extended(case_id)
     export['assets'] = export_case_assets_json_extended(case_id)
+    export['recommendations'] = export_case_recommendations_json_extended(case_id)
     export['tasks'] = export_case_tasks_json_extended(case_id)
     export['notes'] = export_case_notes_json_extended(case_id)
     export['export_date'] = datetime.datetime.utcnow()
@@ -121,6 +123,14 @@ def export_case_assets_json_extended(case_id):
     ).all()
 
     return assets
+
+
+def export_case_recommendations_json_extended(case_id):
+    recommendations = CaseRecommendations.query.filter(
+        CaseRecommendations.recommendation_case_id == case_id
+    ).all()
+
+    return recommendations
 
 
 def export_case_tasks_json_extended(case_id):
@@ -280,6 +290,23 @@ def export_case_tm_json(case_id):
         tim.append(ras)
 
     return tim
+
+
+def export_case_recommendations_json(case_id):
+    res = CaseRecommendations.query.with_entities(
+        CaseRecommendations.recommendation_title,
+        CaseRecommendations.recommendation_tags,
+        CaseRecommendations.recommendation_description,
+        CaseRecommendations.custom_attributes,
+        CaseRecommendations.recommendation_uuid,
+        CaseRecommendations.id
+    ).filter(
+        CaseRecommendations.recommendation_case_id == case_id
+    ).all()
+
+    recommendations = [c._asdict() for c in res]
+
+    return recommendations
 
 
 def export_case_tasks_json(case_id):

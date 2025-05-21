@@ -196,6 +196,12 @@ class CaseTaskForm(FlaskForm):
     task_tags = StringField(u'Task Tags')
 
 
+class CaseRecommendationForm(FlaskForm):
+    recommendation_title = StringField(u'Recommendation Title', validators=[DataRequired()])
+    recommendation_description = TextAreaField(u'Recommendation description')
+    recommendation_tags = StringField(u'Recommendation Tags')
+
+
 class CaseGlobalTaskForm(FlaskForm):
     task_title = StringField(u'Task Title')
     task_description = TextAreaField(u'Task description')

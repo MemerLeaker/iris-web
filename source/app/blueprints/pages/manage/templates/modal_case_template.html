@@ -19,7 +19,7 @@
                         {% else %}
                         <h2>New template</h2>
                         {% endif %}
-                        <p>Case templates allow to prefill case objects such as tasks, tags, and notes.<br/>
+                        <p>Case templates allow to prefill case objects such as recommendations, tasks, tags, and notes.<br/>
                             It can be used to add procedures defining how to react against a specific kind of incident (phishing, ransomware, APT...)</p>
                         <div class="alert-std alert-warning" role="alert">
                              Case templates can be added and edited in this UI, or they can be uploaded as JSON files.<br/>
@@ -49,6 +49,7 @@
                                         <li>title_prefix: A prefix to add to case title.</li>
                                         <li>summary: content to prefill the summary.</li>
                                         <li>tags: A list of case tags.</li>
+                                        <li>recommendations: A lisk of recommendations</li>
                                         <li>tasks: A list of dictionaries defining tasks. Tasks are defined by title (required), description, and list of tags.</li>
                                         <li>note_directories: A list of dictionaries defining note directories. Note directories are defined by title (required), and list of notes. Notes have title (required) and content</li>
                                     </ul>
@@ -79,6 +80,23 @@
     "title_prefix": "[RANS]",
     "summary": "# Context \n\n\n# Contact \n\n\n# Actions \n\n\n",
     "tags": ["ransomware","malware"],
+    "recommendations": [
+        {
+            "title": "Containment",
+            "description": "Contain the incident to prevent further damage",
+            "tags": ["contain"]
+        },
+        {
+            "title": "Eradication",
+            "description": "Remove the malware from the system",
+            "tags": ["eradicate"]
+        },
+        {
+            "title": "Recovery",
+            "description": "Restore the system to normal operation",
+            "tags": ["recover"]
+        }
+    ],
     "tasks": [
         {
             "title": "Identify the perimeter",

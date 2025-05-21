@@ -67,6 +67,7 @@ from app.models.models import NoteRevisions
 from app.models.models import AssetsType
 from app.models.models import CaseAssets
 from app.models.models import CaseReceivedFile
+from app.models.models import CaseRecommendations
 from app.models.models import CaseTasks
 from app.models.cases import Cases
 from app.models.cases import CasesEvent
@@ -861,6 +862,12 @@ class CaseTemplateSchema(ma.Schema):
         return value
 
     tasks: Optional[List[Dict[str, Union[str, List[str]]]]] = fields.List(
+        fields.Dict(keys=fields.Str(), values=fields.Raw(validate=[validate_string_or_list])),
+        allow_none=True,
+        missing=[]
+    )
+
+    recommendations: Optional[List[Dict[str, Union[str, List[str]]]]] = fields.List(
         fields.Dict(keys=fields.Str(), values=fields.Raw(validate=[validate_string_or_list])),
         allow_none=True,
         missing=[]
@@ -1883,6 +1890,90 @@ class TaskStatusSchema(ma.SQLAlchemyAutoSchema):
         load_instance = True
         unknown = EXCLUDE
 
+
+class CaseRecommendationSchema(ma.SQLAlchemyAutoSchema):
+    """Schema for serializing and deserializing CaseRecommendation objects.
+
+    This schema defines the fields to include when serializing and deserializing CaseRecommendation objects.
+    It includes fields for the recommendation title, and CSRF token.
+
+    """
+    recommendation_title: str = auto_field('recommendation_title', required=True, validate=Length(min=2), allow_none=False)
+    recommendation_description: Optional[str] = auto_field('recommendation_description', required=False, allow_none=True)
+    case = ma.Nested(CaseSchema, only=['case_name', 'case_id'])
+
+    class Meta:
+        model = CaseRecommendations
+        load_instance = True
+        include_fk = True
+        unknown = EXCLUDE
+
+    @pre_load
+    def verify_data(self, data: Dict[str, Any], **kwargs: Any) -> Dict[str, Any]:
+        """Verifies that the task status ID is valid.
+
+        This method verifies that the task status ID specified in the data is valid.
+        If the ID is not valid, it raises a validation error.
+
+        Args:
+            data: The data to load.
+            kwargs: Additional keyword arguments.
+
+        Returns:
+            The loaded data.
+
+        Raises:
+            ValidationError: If the task status ID is not valid.
+
+        
+        assert_type_mml(input_var=data.get('task_status_id'),
+                        field_name='task_status_id',
+                        type=int)
+
+        status = TaskStatus.query.filter(TaskStatus.id == data.get('task_status_id')).count()
+        if not status:
+            raise ValidationError("Invalid task status ID", field_name="task_status_id")
+
+        if data.get('task_tags'):
+            for tag in data.get('task_tags').split(','):
+                if not isinstance(tag, str):
+                    raise ValidationError("All items in list must be strings", field_name="task_tags")
+                add_db_tag(tag.strip())
+        """        
+
+        return data
+
+    @post_load
+    def custom_attributes_merge(self, data: Dict[str, Any], **kwargs: Any) -> Dict[str, Any]:
+        """Merges custom attributes.
+
+        This method merges the custom attributes specified in the data with the existing custom attributes.
+        If there are no custom attributes specified, it returns the original data.
+
+        Args:
+            data: The data to load.
+            kwargs: Additional keyword arguments.
+
+        Returns:
+            The loaded data with merged custom attributes.
+
+        """
+        new_attr = data.get('custom_attributes')
+
+        assert_type_mml(input_var=new_attr,
+                        field_name='custom_attributes',
+                        type=dict,
+                        allow_none=True)
+
+        assert_type_mml(input_var=data.get('id'),
+                        field_name='recommendation_id',
+                        type=int,
+                        allow_none=True)
+
+        if new_attr is not None:
+            data['custom_attributes'] = merge_custom_attributes(new_attr, data.get('id'), 'recommendation')
+
+        return data
 
 class CaseTaskSchema(ma.SQLAlchemyAutoSchema):
     """Schema for serializing and deserializing CaseTask objects.

@@ -26,6 +26,7 @@ from app.blueprints.rest.v2.dashboard import dashboard_blueprint
 from app.blueprints.rest.v2.iocs import iocs_blueprint
 from app.blueprints.rest.v2.manage import manage_v2_blueprint
 from app.blueprints.rest.v2.tags import tags_blueprint
+from app.blueprints.rest.v2.recommendations import recommendations_blueprint
 from app.blueprints.rest.v2.tasks import tasks_blueprint
 
 
@@ -36,6 +37,7 @@ rest_v2_blueprint = Blueprint('rest_v2', __name__, url_prefix='/api/v2')
 # Register child blueprints
 rest_v2_blueprint.register_blueprint(cases_blueprint)
 rest_v2_blueprint.register_blueprint(auth_blueprint)
+rest_v2_blueprint.register_blueprint(recommendations_blueprint)
 rest_v2_blueprint.register_blueprint(tasks_blueprint)
 rest_v2_blueprint.register_blueprint(iocs_blueprint)
 rest_v2_blueprint.register_blueprint(assets_blueprint)

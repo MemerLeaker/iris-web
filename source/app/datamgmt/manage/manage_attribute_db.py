@@ -24,6 +24,7 @@ from app import db
 from app import app
 from app.models.models import CaseAssets
 from app.models.models import CaseReceivedFile
+from app.models.models import CaseRecommendations
 from app.models.models import CaseTasks
 from app.models.cases import Cases
 from app.models.cases import CasesEvent
@@ -44,6 +45,8 @@ def update_all_attributes(object_type, previous_attribute, partial_overwrite=Fal
         obj_list = CasesEvent.query.all()
     elif object_type == 'asset':
         obj_list = CaseAssets.query.all()
+    elif object_type == 'recommendation':
+        obj_list = CaseRecommendations.query.all()
     elif object_type == 'task':
         obj_list = CaseTasks.query.all()
     elif object_type == 'note':
@@ -175,6 +178,8 @@ def merge_custom_attributes(data, obj_id, object_type, overwrite=False):
             obj = CasesEvent.query.filter(CasesEvent.event_id == obj_id).first()
         elif object_type == 'asset':
             obj = CaseAssets.query.filter(CaseAssets.asset_id == obj_id).first()
+        elif object_type == 'recommendation':
+            obj = CaseRecommendations.query.filter(CaseRecommendations.id == obj_id).first()
         elif object_type == 'task':
             obj = CaseTasks.query.filter(CaseTasks.id == obj_id).first()
         elif object_type == 'note':

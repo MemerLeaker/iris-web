@@ -11,7 +11,7 @@
           <div class="modal-content">
             <div class="modal-body">
                 <div class="accordion accordion-primary">
-                        <p>Case templates allow to prefill case objects such as tasks, tags, and notes.<br/>
+                        <p>Case templates allow to prefill case objects such as recommendations, tasks, tags, and notes.<br/>
                             It could be used to add procedures defining how to react against a specific kind of incident (phishing, ransomware, APT...)</p>
                         <div class="alert-std alert-warning" role="alert">
                              Case templates can be uploaded as JSON files, or they can be added and edited in the Add/Edit case template UI.<br/>
@@ -41,6 +41,21 @@
     "title_prefix": "RANS",
     "summary": "# Context \n\n\n # Contact \n\n\n # Actions \n\n\n",
     "tags": ["ransomware","malware"],
+    "recommendations": [
+        {
+            "title": "Identify the perimeter",
+            "description": "The perimeter of compromise must be identified",
+            "tags": ["identify"]
+        },
+        {
+            "title": "Collect compromised hosts",
+            "description": "Deploy Velociraptor and start collecting evidence",
+            "tags": ["collect", "velociraptor"]
+        },
+        {
+            "title": "Contain"
+        }
+    ],
     "tasks": [
         {
             "title": "Identify the perimeter",
@@ -92,6 +107,7 @@
                                     <li>title_prefix: A prefix to add to case title.</li>
                                     <li>summary: content to prefill the summary.</li>
                                     <li>tags: A list of case tags.</li>
+                                    <li>recommendations: A list of dictionaries defining recommendations. Recommendations are defined by title (required), description, and list of tags.</li>
                                     <li>tasks: A list of dictionaries defining tasks. Tasks are defined by title (required), description, and list of tags.</li>
                                     <li>note_groups: A list of dictionaries defining note groups. Note groups are defined by title (required), and list of notes. Notes have title (required) and content</li>
                                 </ul>

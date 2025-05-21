@@ -229,6 +229,7 @@ class CaseTemplate(db.Model):
     summary = Column(String, nullable=True)
     tags = Column(JSON, nullable=True)
     tasks = Column(JSON, nullable=True)
+    recommendations = Column(JSON, nullable=True)
     note_directories = Column(JSON, nullable=True)
     classification = Column(String, nullable=True)
 
@@ -606,6 +607,23 @@ class CaseTasks(db.Model):
     user_close = relationship('User', foreign_keys=[task_userid_close])
     user_update = relationship('User', foreign_keys=[task_userid_update])
     status = relationship('TaskStatus', foreign_keys=[task_status_id])
+
+class CaseRecommendations(db.Model):
+    __tablename__ = 'case_recommendations'
+
+    id = Column(BigInteger, primary_key=True)
+    recommendation_uuid = Column(UUID(as_uuid=True), default=uuid.uuid4, server_default=text("gen_random_uuid()"), nullable=False)
+    recommendation_title = Column(Text)
+    recommendation_description = Column(Text)
+    recommendation_tags = Column(Text)
+    recommendation_open_date = Column(DateTime)
+    recommendation_userid_open = Column(ForeignKey('user.id'))
+    recommendation_case_id = Column(ForeignKey('cases.case_id'))
+    custom_attributes = Column(JSON)
+    modification_history = Column(JSON)
+
+    case = relationship('Cases')
+    user_open = relationship('User', foreign_keys=[recommendation_userid_open])
 
 
 class Tags(db.Model):

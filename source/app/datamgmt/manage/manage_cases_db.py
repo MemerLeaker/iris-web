@@ -44,6 +44,7 @@ from app.models.models import CaseEventCategory
 from app.models.models import CaseEventsAssets
 from app.models.models import CaseEventsIoc
 from app.models.models import CaseReceivedFile
+from app.models.models import CaseRecommendations
 from app.models.models import CaseTasks
 from app.models.cases import Cases
 from app.models.cases import CasesEvent
@@ -382,6 +383,10 @@ def delete_case(case_id):
 
     Notes.query.filter(Notes.note_case_id == case_id).delete()
     NoteDirectory.query.filter(NoteDirectory.case_id == case_id).delete()
+
+    recommendations = CaseRecommendations.query.filter(CaseRecommendations.recommendation_case_id == case_id).all()
+    for recommendation in recommendations:
+        CaseRecommendations.query.filter(CaseRecommendations.id == recommendation.id).delete()
 
     tasks = CaseTasks.query.filter(CaseTasks.task_case_id == case_id).all()
     for task in tasks:

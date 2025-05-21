@@ -74,6 +74,7 @@ def case_template_modal(cur_id, caseid, url_redir):
         "title_prefix": case_template.title_prefix,
         "summary": case_template.summary,
         "tags": case_template.tags,
+        "recommendations": case_template.recommendations,
         "tasks": case_template.tasks,
         "note_directories": case_template.note_directories,
         "classification": case_template.classification
@@ -101,6 +102,13 @@ def add_template_modal(caseid, url_redir):
         "title_prefix": "[PREFIX]",
         "summary": "Summary to be set",
         "tags": ["ransomware", "malware"],
+        "recommendations": [
+            {
+                "title": "Recommendation 1",
+                "description": "Recommendation 1 description",
+                "tags": ["tag1", "tag2"]
+            }
+        ],
         "tasks": [
             {
                 "title": "Task 1",

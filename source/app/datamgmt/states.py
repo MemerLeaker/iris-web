@@ -91,6 +91,14 @@ def get_timeline_state(caseid):
     return get_object_state('timeline', caseid=caseid)
 
 
+def update_recommendations_state(caseid, userid=None):
+    return _update_object_state('recommendations', caseid=caseid, userid=userid)
+
+
+def get_recommendations_state(caseid):
+    return get_object_state('recommendations', caseid=caseid)
+
+
 def update_tasks_state(caseid, userid=None):
     return _update_object_state('tasks', caseid=caseid, userid=userid)
 

@@ -304,6 +304,25 @@ def create_safe_hooks():
     create_safe(db.session, IrisHook, hook_name='on_manual_trigger_evidence',
                 hook_description='Triggered upon user action')
 
+     # --- recommendations
+    create_safe(db.session, IrisHook, hook_name='on_preload_recommendation_create',
+                hook_description='Triggered on recommendation creation, before commit in DB')
+    create_safe(db.session, IrisHook, hook_name='on_postload_recommendation_create',
+                hook_description='Triggered on ecommendation creation, after commit in DB')
+
+    create_safe(db.session, IrisHook, hook_name='on_preload_recommendation_update',
+                hook_description='Triggered on recommendation update, before commit in DB')
+    create_safe(db.session, IrisHook, hook_name='on_postload_recommendation_update',
+                hook_description='Triggered on recommendation update, after commit in DB')
+
+    create_safe(db.session, IrisHook, hook_name='on_preload_recommendation_delete',
+                hook_description='Triggered on recommendation deletion, before commit in DB')
+    create_safe(db.session, IrisHook, hook_name='on_postload_recommendation_delete',
+                hook_description='Triggered on recommendation deletion, after commit in DB')
+
+    create_safe(db.session, IrisHook, hook_name='on_manual_trigger_recommendation',
+                hook_description='Triggered upon user action')
+    
     # --- tasks
     create_safe(db.session, IrisHook, hook_name='on_preload_task_create',
                 hook_description='Triggered on task creation, before commit in DB')
@@ -777,6 +796,9 @@ def create_safe_attributes():
                      attribute_content={})
     create_safe_attr(db.session, attribute_display_name='Assets',
                      attribute_description='Defines default attributes for Assets', attribute_for='asset',
+                     attribute_content={})
+    create_safe_attr(db.session, attribute_display_name='Recommendations',
+                     attribute_description='Defines default attributes for Recommendations', attribute_for='recommendation',
                      attribute_content={})
     create_safe_attr(db.session, attribute_display_name='Tasks',
                      attribute_description='Defines default attributes for Tasks', attribute_for='task',
@@ -1616,7 +1638,7 @@ class PostInit:
                 if not prevent_objects:
                     self._logger.info("Creating base case classification")
                     self._create_safe_classifications()
-
+                
                 self._logger.info("Creating base tasks status")
                 create_safe_task_status()
 

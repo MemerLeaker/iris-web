@@ -43,6 +43,7 @@ from app.datamgmt.states import update_evidences_state
 from app.datamgmt.states import update_ioc_state
 from app.datamgmt.states import update_notes_state
 from app.datamgmt.states import update_tasks_state
+from app.datamgmt.states import update_recommendations_state
 from app.datamgmt.states import update_timeline_state
 from app.models.models import Client
 
@@ -133,6 +134,7 @@ class Cases(db.Model):
         # Create the states
         update_timeline_state(caseid=self.case_id, userid=self.user_id)
         update_tasks_state(caseid=self.case_id, userid=self.user_id)
+        update_recommendations_state(caseid=self.case_id, userid=self.user_id)
         update_evidences_state(caseid=self.case_id, userid=self.user_id)
         update_ioc_state(caseid=self.case_id, userid=self.user_id)
         update_assets_state(caseid=self.case_id, userid=self.user_id)
