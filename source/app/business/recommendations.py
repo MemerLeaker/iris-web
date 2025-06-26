@@ -102,5 +102,5 @@ def recommendations_update(recommendation: CaseRecommendations, request_json):
     if not recommendation:
         raise BusinessProcessingError('Unable to update recommendation for internal reasons')
 
-    track_activity(f'updated recommendation "{recommendation.recommendation_title}" (status {recommendation.status.status_name})', caseid=case_identifier)
+    track_activity(f'updated recommendation "{recommendation.recommendation_title}")', caseid=case_identifier)
     return recommendation

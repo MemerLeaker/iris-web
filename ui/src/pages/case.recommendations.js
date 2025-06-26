@@ -288,12 +288,12 @@ $(document).ready(function(){
                 let datak = '';
                 let anchor = $('<a>')
                     .attr('href', 'javascript:void(0);')
-                    .attr('data-recommendation_id', row['recommendation_id'])
-                    .attr('title', `Recommendation ID #${row['recommendation_id']} - ${data}`)
+                    .attr('data-recommendation_id', row['id'])
+                    .attr('title', `Recommendation ID #${row['id']} - ${data}`)
                     .addClass('recommendation_details_link')
 
                 if (isWhiteSpace(data)) {
-                    datak = '#' + row['recommendation_id'];
+                    datak = '#' + row['id'];
                     anchor.text(datak);
                 } else {
                     datak= ellipsis_field(data, 64);

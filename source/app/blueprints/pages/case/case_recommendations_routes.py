@@ -79,7 +79,7 @@ def case_recommendation_view_modal(cur_id, caseid, url_redir):
 
     form.recommendation_title.render_kw = {'value': recommendation.recommendation_title}
     form.recommendation_description.data = recommendation.recommendation_description
-    user_name, = User.query.with_entities(User.name).filter(User.id == recommendation.recommendation_userid_update).first()
+    #user_name, = User.query.with_entities(User.name).filter(User.id == recommendation.recommendation_userid_update).first()
 
-    return render_template("modal_add_case_recommendation.html", form=form, recommendation=recommendation,
-                           user_name=user_name)
+    return render_template("modal_add_case_recommendation.html", form=form, recommendation=recommendation)#,
+                           #user_name=user_name*/)
