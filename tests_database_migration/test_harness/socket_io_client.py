@@ -1,5 +1,5 @@
 #  IRIS Source Code
-#  Copyright (C) 2024 - DFIR-IRIS
+#  Copyright (C) 2023 - DFIR-IRIS
 #  contact@dfir-iris.org
 #
 #  This program is free software; you can redistribute it and/or
@@ -16,15 +16,27 @@
 #  along with this program; if not, write to the Free Software Foundation,
 #  Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from flask import Blueprint
+from socketio import SimpleClient
 
-from app.blueprints.rest.v2.manage_routes.groups import create_groups_blueprint
-from app.blueprints.rest.v2.manage_routes.users import create_users_blueprint
 
-manage_v2_blueprint = Blueprint('manage', __name__, url_prefix='/manage')
+class SocketIOClient:
 
-groups_blueprint = create_groups_blueprint()
-manage_v2_blueprint.register_blueprint(groups_blueprint)
+    def __init__(self, url, api_key):
+        self._url = url
+        self._api_key = api_key
+        self._client = SimpleClient()
 
-users_blueprint = create_users_blueprint()
-manage_v2_blueprint.register_blueprint(users_blueprint)
+    def connect(self):
+        self._client.connect(self._url, headers={'Authorization': f'Bearer {self._api_key}'})
+
+    def emit(self, event, channel):
+        print(f'==> {event}/{channel}')
+        self._client.emit(event, {'channel': channel})
+
+    def receive(self):
+        message = self._client.receive(timeout=20)
+        print(f'<== {message[0]}/{message[1]}')
+        return message[1]
+
+    def disconnect(self):
+        self._client.disconnect()

@@ -1,5 +1,4 @@
-#  IRIS Source Code
-#  Copyright (C) 2024 - DFIR-IRIS
+#  Copyright (C) 2023 - DFIR-IRIS
 #  contact@dfir-iris.org
 #
 #  This program is free software; you can redistribute it and/or
@@ -16,15 +15,26 @@
 #  along with this program; if not, write to the Free Software Foundation,
 #  Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from flask import Blueprint
+from test_harness.rest_api import RestApi
 
-from app.blueprints.rest.v2.manage_routes.groups import create_groups_blueprint
-from app.blueprints.rest.v2.manage_routes.users import create_users_blueprint
 
-manage_v2_blueprint = Blueprint('manage', __name__, url_prefix='/manage')
+class User:
 
-groups_blueprint = create_groups_blueprint()
-manage_v2_blueprint.register_blueprint(groups_blueprint)
+    def __init__(self, iris_url, api_key, identifier):
+        self._api = RestApi(iris_url, api_key)
+        self._identifier = identifier
 
-users_blueprint = create_users_blueprint()
-manage_v2_blueprint.register_blueprint(users_blueprint)
+    def get_identifier(self):
+        return self._identifier
+
+    def create(self, path, payload):
+        return self._api.post(path, payload)
+
+    def get(self, path):
+        return self._api.get(path)
+
+    def update(self, path, body):
+        return self._api.put(path, body)
+
+    def delete(self, path):
+        return self._api.delete(path)

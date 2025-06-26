@@ -18,15 +18,14 @@
 
 from uuid import uuid4
 from pathlib import Path
-from docker_compose import DockerCompose
-from rest_api import RestApi
-from user import User
-from socket_io_context_manager import SocketIOContextManager
+from test_harness.rest_api import RestApi
+from test_harness.user import User
+from test_harness.socket_io_context_manager import SocketIOContextManager
 
 API_URL = 'http://127.0.0.1:8000'
 # TODO SSOT: this should be directly read from the .env file
 _API_KEY = 'B8BA5D730210B50F41C06941582D7965D57319D5685440587F98DFDC45A01594'
-_IRIS_PATH = Path('..')
+_IRIS_PATH = Path('../..')
 _ADMINISTRATOR_USER_IDENTIFIER = 1
 _INITIAL_DEMO_CASE_IDENTIFIER = 1
 
@@ -34,7 +33,6 @@ _INITIAL_DEMO_CASE_IDENTIFIER = 1
 class Iris:
 
     def __init__(self):
-        self._docker_compose = DockerCompose(_IRIS_PATH, 'docker-compose.dev.yml')
         # TODO remove this field and use _administrator instead
         self._api = RestApi(API_URL, _API_KEY)
         self._administrator = User(API_URL, _API_KEY, _ADMINISTRATOR_USER_IDENTIFIER)
@@ -101,5 +99,3 @@ class Iris:
             self.get(f'/manage/users/deactivate/{identifier}')
             self.create(f'/manage/users/delete/{identifier}', {})
 
-    def extract_logs(self, service):
-        return self._docker_compose.extract_logs(service)

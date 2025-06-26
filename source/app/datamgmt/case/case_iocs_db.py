@@ -35,6 +35,7 @@ from app.models.authorization import User
 from app.models.authorization import UserCaseEffectiveAccess
 from app.models.authorization import CaseAccessLevel
 from app.models.pagination_parameters import PaginationParameters
+from app.util import add_obj_history_entry
 
 log = app.logger
 
@@ -80,7 +81,6 @@ def update_ioc(ioc_type, ioc_tags, ioc_value, ioc_description, ioc_tlp, userid, 
 
 
 def delete_ioc(ioc: Ioc):
-    # Delete the relevant records from the AssetComments table
     com_ids = IocComments.query.with_entities(
         IocComments.comment_id
     ).filter(
@@ -153,6 +153,7 @@ def add_ioc(ioc: Ioc, user_id, caseid):
     db.session.add(ioc)
 
     update_ioc_state(caseid=caseid)
+    add_obj_history_entry(ioc, 'created ioc')
     db.session.commit()
 
 

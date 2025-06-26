@@ -20,6 +20,8 @@ from app.models.authorization import Group
 from app.iris_engine.utils.tracker import track_activity
 from app.datamgmt.manage.manage_groups_db import create_group
 from app.datamgmt.manage.manage_groups_db import get_group_details
+from app.datamgmt.manage.manage_groups_db import update_group
+from app.datamgmt.manage.manage_groups_db import delete_group
 from app.business.errors import ObjectNotFoundError
 
 
@@ -35,3 +37,11 @@ def groups_get(identifier) -> Group:
     if not group:
         raise ObjectNotFoundError()
     return group
+
+
+def groups_update():
+    update_group()
+
+
+def groups_delete(group: Group):
+    delete_group(group)

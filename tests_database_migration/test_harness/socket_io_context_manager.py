@@ -1,5 +1,5 @@
 #  IRIS Source Code
-#  Copyright (C) 2024 - DFIR-IRIS
+#  Copyright (C) 2023 - DFIR-IRIS
 #  contact@dfir-iris.org
 #
 #  This program is free software; you can redistribute it and/or
@@ -16,15 +16,17 @@
 #  along with this program; if not, write to the Free Software Foundation,
 #  Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from flask import Blueprint
+from test_harness.socket_io_client import SocketIOClient
 
-from app.blueprints.rest.v2.manage_routes.groups import create_groups_blueprint
-from app.blueprints.rest.v2.manage_routes.users import create_users_blueprint
 
-manage_v2_blueprint = Blueprint('manage', __name__, url_prefix='/manage')
+class SocketIOContextManager:
 
-groups_blueprint = create_groups_blueprint()
-manage_v2_blueprint.register_blueprint(groups_blueprint)
+    def __init__(self, url, api_key):
+        self._client = SocketIOClient(url, api_key)
 
-users_blueprint = create_users_blueprint()
-manage_v2_blueprint.register_blueprint(users_blueprint)
+    def __enter__(self) -> SocketIOClient:
+        self._client.connect()
+        return self._client
+
+    def __exit__(self, type, value, traceback):
+        self._client.disconnect()
