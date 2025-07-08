@@ -21,6 +21,7 @@ from app.models.models import AnalysisStatus
 from app.models.models import IocType
 from app.models.models import AssetsType
 from app.models.models import EventCategory
+from app.models.models import Recommendation
 
 
 def search_analysis_status_by_name(name: str, exact_match: bool = False) -> AnalysisStatus:
@@ -85,3 +86,18 @@ def search_event_category_by_name(name: str, exact_match: bool = False) -> Asset
         return EventCategory.query.filter(func.lower(EventCategory.name) == name.lower()).all()
 
     return EventCategory.query.filter(EventCategory.name.ilike(f'%{name}%')).all()
+
+def search_recommendation_by_name(name: str, exact_match: bool = False) -> Recommendation:
+    """
+    Search a recommendation by its name
+
+    args:
+        name: the name of the recommendation
+        exact_match: if True, the name must be exactly the same as the one in the database
+
+    return: the recommendation
+    """
+    if exact_match:
+        return Recommendation.query.filter(func.lower(Recommendation.recommendation_name) == name.lower()).all()
+
+    return Recommendation.query.filter(Recommendation.recommendation_name.ilike(f'%{name}%')).all()

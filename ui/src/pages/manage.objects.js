@@ -649,3 +649,120 @@ function delete_evidence_type(id) {
       }
     });
 }
+
+/***    Recommendations    ***/
+
+function add_recommendation() {
+    console.log("CCCCCCCCCCCCCCCCCCC");
+    var url = '/manage/recommendations/add/modal' + case_param();
+    $('#modal_add_type_content').load(url, function () {
+
+        $('#submit_new_recommendation').on("click", function () {
+            var form = $('form#form_new_recommendation').serializeObject();
+
+            post_request_api('/manage/recommendations/add', JSON.stringify(form), true)
+            .done((data) => {
+                if(notify_auto_api(data)) {
+                    refresh_recommendations_table();
+                    $('#modal_add_type').modal('hide');
+                }
+            });
+
+            return false;
+        })
+    });
+    $('#modal_add_type').modal({ show: true });
+}
+
+$('#recommendations_table').dataTable({
+    "ajax": {
+      "url": `/manage/recommendations/list}`,
+      "contentType": "application/json",
+      "type": "GET",
+      "data": function ( d ) {
+        if (d.status == 'success') {
+          console.log("Data: " + JSON.stringify(d.data));
+          return JSON.stringify( d.data );
+        } else {
+          console.log("Error: " + JSON.stringify(d));
+          return [];
+        }
+      }
+    },
+    "order": [[ 0, "asc" ]],
+    "autoWidth": false,
+    "columns": [
+        {
+            "data": "title",
+            "render": function ( data, type, row ) {
+                return '<h1>Test</h1>';
+                // return '<a href="#" onclick="recommendation_detail(\'' + row['id'] + '\');">' + sanitizeHTML(data) +'</a>';
+            }
+        },
+        {
+            "data": "description",
+            "render": function ( data, type, row ) {
+                if (type === 'display') { data = sanitizeHTML(data);}
+                return data;
+            }
+        }
+    ]
+ });
+
+function refresh_recommendations_table() {
+  $('#recommendations_table').DataTable().ajax.reload();
+  notify_success("Refreshed");
+}
+
+function recommendation_detail(recommendation_id) {
+    let url = '/manage/recommendations/update/' + recommendation_id + '/modal' + case_param();
+    $('#modal_add_type_content').load(url, function (response, status, xhr) {
+        if (status !== "success") {
+             ajax_notify_error(xhr, url);
+             return false;
+        }
+
+        $('#submit_new_recommendation').on("click", function () {
+            var form = $('form#form_new_recommendation').serializeObject();
+
+            post_request_api('/manage/recommendations/update/' + recommendation_id, JSON.stringify(form), true)
+            .done((data) => {
+                if(notify_auto_api(data)) {
+                    refresh_recommendations_table();
+                    $('#modal_add_type').modal('hide');
+                }
+            });
+
+            return false;
+        })
+
+
+    });
+    $('#modal_add_type').modal({ show: true });
+}
+function delete_recommendation(id) {
+
+    swal({
+      title: "Are you sure?",
+      text: "You won't be able to revert this !",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    })
+    .then((willDelete) => {
+      if (willDelete) {
+            post_request_api('/manage/recommendations/delete/' + id)
+            .done((data) => {
+                if(notify_auto_api(data)) {
+                    refresh_recommendations_table();
+                    $('#modal_add_type').modal('hide');
+                }
+            });
+      } else {
+        swal("Pfew, that was close");
+      }
+    });
+}

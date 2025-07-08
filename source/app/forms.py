@@ -94,6 +94,16 @@ class EvidenceTypeForm(FlaskForm):
     name = StringField(u'Evidence type name', validators=[DataRequired()])
     description = StringField(u'Evidence type description', validators=[DataRequired()])
 
+class RecommendationForm(FlaskForm):
+    title = StringField(u'Recommendation name', validators=[DataRequired()])
+    description = StringField(u'Recommendation description', validators=[DataRequired()])
+    recommendation_tags = StringField(u'Recommendation Tags')
+
+class AddRecommendationForm(FlaskForm):
+    title = StringField(u'Global Recommendation name', validators=[DataRequired()])
+    description = StringField(u'Global Recommendation description', validators=[DataRequired()])
+    recommendation_tags = StringField(u'Recommendation Tags')
+
 
 class CaseStateForm(FlaskForm):
     state_name = StringField(u'Case state name', validators=[DataRequired()])
