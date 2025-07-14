@@ -46,35 +46,38 @@ def list_recommendations() -> Response:
         Flask Response object
 
     """
+    print("ici")
     l_cl = get_recommendations_list()
+
+    print(f"l_cl: {l_cl}")
 
     return response_success("", data=l_cl)
 
 
-@manage_recommendations_rest_blueprint.route('/manage/recommendations/<str:recommendation_title>', methods=['GET'])
-@ac_api_requires()
-def get_recommendation(recommendation_title: str) -> Response:
-    """Get a recommendation
+# @manage_recommendations_rest_blueprint.route('/manage/recommendations/<str:recommendation_title>', methods=['GET'])
+# @ac_api_requires()
+# def get_recommendation(recommendation_title: str) -> Response:
+#     """Get a recommendation
 
-    Args:
-        recommendation_id (int): recommendation ID
-        caseid (int): case id
+#     Args:
+#         recommendation_id (int): recommendation ID
+#         caseid (int): case id
 
-    Returns:
-        Flask Response object
-    """
-    recommendation_schema = CaseRecommendationSchema()
-    recommendation = get_recommendation_by_name(recommendation_title)
-    if recommendation is None:
-        return response_error(f"Invalid evidence type ID {recommendation_title}")
+#     Returns:
+#         Flask Response object
+#     """
+#     recommendation_schema = CaseRecommendationSchema()
+#     recommendation = get_recommendation_by_name(recommendation_title)
+#     if recommendation is None:
+#         return response_error(f"Invalid evidence type ID {recommendation_title}")
 
-    return response_success("", data=recommendation_schema.dump(recommendation))
+#     return response_success("", data=recommendation_schema.dump(recommendation))
 
 
 @manage_recommendations_rest_blueprint.route('/manage/recommendations/update/<int:recommendation_id>',
                                             methods=['POST'])
 @ac_api_requires(Permissions.server_administrator)
-def update_case_classification(recommendation_id: int) -> Response:
+def update_recommendation(recommendation_id: int) -> Response:
     """Update a recommendation
 
     Args:
@@ -87,6 +90,7 @@ def update_case_classification(recommendation_id: int) -> Response:
         return response_error("Invalid request")
 
     recommendation = get_recommendation_by_id(recommendation_id)
+
     if not recommendation:
         return response_error(f"Invalid evidence type ID {recommendation_id}")
 

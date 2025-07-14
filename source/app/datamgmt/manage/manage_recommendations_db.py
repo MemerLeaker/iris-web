@@ -32,6 +32,8 @@ def get_recommendations_list() -> List[dict]:
         Recommendation.description,
     ).all()
 
+    print(f"recommendations: {recommendations}")
+
     c_cl = [row._asdict() for row in recommendations]
     return c_cl
 
@@ -48,8 +50,20 @@ def get_recommendation_by_name(cur_name: str) -> Recommendation:
     recommendation = Recommendation.query.filter_by(name=cur_name).first()
     return recommendation
 
+def get_recommendation_by_id(id: int) -> Recommendation:
+    """Get a recommendation
 
-def search_erecommendation_by_name(name: str, exact_match: bool = False) -> List[dict]:
+    Args:
+        id (int): recommendation id
+
+    Returns:
+        Recommendation: Recommendation title
+    """
+    recommendation = Recommendation.query.filter_by(id=id).first()
+    return recommendation
+
+
+def search_recommendation_by_name(name: str, exact_match: bool = False) -> List[dict]:
     """Search for a recommendation by title
 
     Args:

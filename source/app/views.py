@@ -83,6 +83,7 @@ from app.blueprints.rest.manage.manage_customers_routes import manage_customers_
 from app.blueprints.rest.manage.manage_event_categories_routes import manage_event_categories_rest_blueprint
 from app.blueprints.rest.manage.manage_groups import manage_groups_rest_blueprint
 from app.blueprints.rest.manage.manage_ioc_types_routes import manage_ioc_type_rest_blueprint
+from app.blueprints.rest.manage.manage_recommendations_routes import manage_recommendations_rest_blueprint
 from app.blueprints.rest.manage.manage_modules_routes import manage_modules_rest_blueprint
 from app.blueprints.rest.manage.manage_severities_routes import manage_severities_rest_blueprint
 from app.blueprints.rest.manage.manage_server_settings_routes import manage_server_settings_rest_blueprint
@@ -130,6 +131,7 @@ def register_blueprints(app):
     app.register_blueprint(manage_analysis_status_rest_blueprint)
     app.register_blueprint(manage_ioc_type_blueprint)
     app.register_blueprint(manage_ioc_type_rest_blueprint)
+    app.register_blueprint(manage_recommendations_rest_blueprint)
     app.register_blueprint(manage_event_categories_rest_blueprint)
     app.register_blueprint(manage_objects_blueprint)
     app.register_blueprint(manage_tlp_type_rest_blueprint)

@@ -215,7 +215,7 @@ class Recommendation(db.Model):
     __tablename__ = 'recommendation'
 
     id = Column(Integer, primary_key=True)
-    name = Column(Text)
+    title = Column(Text)
     description = Column(Text)
     creation_date = Column(DateTime, server_default=func.now(), nullable=True)
     created_by_id = Column(ForeignKey('user.id'), nullable=True)

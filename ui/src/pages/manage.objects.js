@@ -676,7 +676,7 @@ function add_recommendation() {
 
 $('#recommendations_table').dataTable({
     "ajax": {
-      "url": `/manage/recommendations/list}`,
+      "url": `/manage/recommendations/list${case_param()}`,
       "contentType": "application/json",
       "type": "GET",
       "data": function ( d ) {

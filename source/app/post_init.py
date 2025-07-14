@@ -574,11 +574,11 @@ def create_safe_recommendations():
 
     """
     # Create new Recommendation objects for each recommendation
-    create_safe(db.session, Recommendation, name='Unspecified', description="Unspecified")
+    create_safe(db.session, Recommendation, title='Unspecified', description="Unspecified")
 
-    create_safe(db.session, Recommendation, name='Investigate', description="Investigate this IOC")
-    create_safe(db.session, Recommendation, name='Remediate', description="Remediate this IOC")
-    create_safe(db.session, Recommendation, name='Ignore', description="Ignore this IOC")
+    create_safe(db.session, Recommendation, title='Investigate', description="Investigate this IOC")
+    create_safe(db.session, Recommendation, title='Remediate', description="Remediate this IOC")
+    create_safe(db.session, Recommendation, title='Ignore', description="Ignore this IOC")
 
 def create_safe_evidence_types():
     """Creates new Evidence Types objects if they do not already exist.
