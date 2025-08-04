@@ -40,6 +40,7 @@ from app.blueprints.access_controls import ac_requires_case_identifier
 from app.blueprints.access_controls import ac_api_requires
 from app.blueprints.responses import response_error
 from app.blueprints.responses import response_success
+from app.blueprints.rest.manage.manage_recommendations_routes import get_recommendations_list
 
 case_recommendations_rest_blueprint = Blueprint('case_recommendations_rest', __name__)
 
@@ -102,6 +103,32 @@ def deprecated_case_add_recommendation(caseid: int):
         return response_success(msg, data=recommendation_schema.dump(recommendation))
     except BusinessProcessingError as e:
         return response_error(e.get_message(), data=e.get_data())
+    
+@case_recommendations_rest_blueprint.route('/case/recommendations/import', methods=['GET', 'POST'])
+@endpoint_deprecated('POST', '/api/v2/cases/<int:caseid>/recommendations/import')
+@ac_requires_case_identifier(CaseAccessLevel.full_access)
+@ac_api_requires()
+def deprecated_case_import_recommendation(caseid: int):
+    print("Importing recommendations for case:", caseid)
+    if request.method == 'POST':
+        print("POST")
+        recommendation_ids = request.form.getlist('recommendation_ids')
+        if not recommendation_ids:
+            return response_error("No recommendations selected for import")
+
+        try:
+            recommendations = recommendations_create(case_identifier=caseid, recommendation_ids=recommendation_ids)
+            recommendation_schema = CaseRecommendationSchema(many=True)
+            return response_success("Recommendations imported successfully", data=recommendation_schema.dump(recommendations))
+        except BusinessProcessingError as e:
+            return response_error(e.get_message(), data=e.get_data()) 
+    else:
+        print("GET")
+        global_recommendations = get_recommendations_list()
+        if not global_recommendations:
+            return response_error("No global recommendations available")
+
+        return response_success(data={'global_recommendations': global_recommendations})
 
 
 @case_recommendations_rest_blueprint.route('/case/recommendations/<int:cur_id>', methods=['GET'])

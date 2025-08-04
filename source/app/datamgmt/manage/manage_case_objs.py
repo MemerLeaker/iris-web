@@ -21,7 +21,7 @@ from app.models.models import AnalysisStatus
 from app.models.models import IocType
 from app.models.models import AssetsType
 from app.models.models import EventCategory
-from app.models.models import Recommendation
+from app.models.models import GlobalRecommendation
 
 
 def search_analysis_status_by_name(name: str, exact_match: bool = False) -> AnalysisStatus:
@@ -87,7 +87,7 @@ def search_event_category_by_name(name: str, exact_match: bool = False) -> Asset
 
     return EventCategory.query.filter(EventCategory.name.ilike(f'%{name}%')).all()
 
-def search_recommendation_by_name(name: str, exact_match: bool = False) -> Recommendation:
+def search_recommendation_by_name(name: str, exact_match: bool = False) -> GlobalRecommendation:
     """
     Search a recommendation by its name
 
@@ -98,6 +98,6 @@ def search_recommendation_by_name(name: str, exact_match: bool = False) -> Recom
     return: the recommendation
     """
     if exact_match:
-        return Recommendation.query.filter(func.lower(Recommendation.recommendation_name) == name.lower()).all()
+        return GlobalRecommendation.query.filter(func.lower(GlobalRecommendation.title) == name.lower()).all()
 
-    return Recommendation.query.filter(Recommendation.recommendation_name.ilike(f'%{name}%')).all()
+    return GlobalRecommendation.query.filter(GlobalRecommendation.title.ilike(f'%{name}%')).all()

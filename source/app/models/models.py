@@ -211,16 +211,13 @@ class EvidenceTypes(db.Model):
 
     created_by = relationship('User')
 
-class Recommendation(db.Model):
+class GlobalRecommendation(db.Model):
     __tablename__ = 'recommendation'
 
     id = Column(Integer, primary_key=True)
     title = Column(Text)
     description = Column(Text)
-    creation_date = Column(DateTime, server_default=func.now(), nullable=True)
-    created_by_id = Column(ForeignKey('user.id'), nullable=True)
-
-    created_by = relationship('User')
+    tags = Column(Text)
 
 
 class CaseTemplate(db.Model):
@@ -627,15 +624,11 @@ class CaseRecommendations(db.Model):
     recommendation_title = Column(Text)
     recommendation_description = Column(Text)
     recommendation_tags = Column(Text)
-    recommendation_open_date = Column(DateTime)
-    recommendation_userid_open = Column(ForeignKey('user.id'))
     recommendation_case_id = Column(ForeignKey('cases.case_id'))
-    custom_attributes = Column(JSON)
    
     template_id = Column(ForeignKey('recommendation.id'), nullable=True)
 
     case = relationship('Cases')
-    user_open = relationship('User', foreign_keys=[recommendation_userid_open])
 
 
 class Tags(db.Model):

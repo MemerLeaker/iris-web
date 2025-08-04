@@ -17,7 +17,7 @@
 from sqlalchemy import func
 from typing import List
 
-from app.models.models import Recommendation
+from app.models.models import GlobalRecommendation
 
 
 def get_recommendations_list() -> List[dict]:
@@ -26,19 +26,17 @@ def get_recommendations_list() -> List[dict]:
     Returns:
         List[dict]: List of recommendations
     """
-    recommendations = Recommendation.query.with_entities(
-        Recommendation.id,
-        Recommendation.title,
-        Recommendation.description,
+    recommendations = GlobalRecommendation.query.with_entities(
+        GlobalRecommendation.id,
+        GlobalRecommendation.title,
+        GlobalRecommendation.description,
     ).all()
-
-    print(f"recommendations: {recommendations}")
 
     c_cl = [row._asdict() for row in recommendations]
     return c_cl
 
 
-def get_recommendation_by_name(cur_name: str) -> Recommendation:
+def get_recommendation_by_name(cur_name: str) -> GlobalRecommendation:
     """Get a recommendation
 
     Args:
@@ -47,10 +45,10 @@ def get_recommendation_by_name(cur_name: str) -> Recommendation:
     Returns:
         Recommendation: Recommendation title
     """
-    recommendation = Recommendation.query.filter_by(name=cur_name).first()
+    recommendation = GlobalRecommendation.query.filter_by(name=cur_name).first()
     return recommendation
 
-def get_recommendation_by_id(id: int) -> Recommendation:
+def get_recommendation_by_id(id: int) -> GlobalRecommendation:
     """Get a recommendation
 
     Args:
@@ -59,7 +57,7 @@ def get_recommendation_by_id(id: int) -> Recommendation:
     Returns:
         Recommendation: Recommendation title
     """
-    recommendation = Recommendation.query.filter_by(id=id).first()
+    recommendation = GlobalRecommendation.query.filter_by(id=id).first()
     return recommendation
 
 
@@ -74,8 +72,8 @@ def search_recommendation_by_name(name: str, exact_match: bool = False) -> List[
         List[dict]: List of recommendations
     """
     if exact_match:
-        query_filter = (func.lower(Recommendation.title) == name.lower())
+        query_filter = (func.lower(GlobalRecommendation.title) == name.lower())
     else:
-        query_filter = (Recommendation.title.ilike(f'%{name}%'))
+        query_filter = (GlobalRecommendation.title.ilike(f'%{name}%'))
 
-    return Recommendation.query.filter(query_filter).all()
+    return GlobalRecommendation.query.filter(query_filter).all()

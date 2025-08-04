@@ -60,6 +60,7 @@ from app.models.models import IrisModuleHook
 from app.models.models import Tags
 from app.models.models import ReviewStatus
 from app.models.models import EvidenceTypes
+from app.models.models import GlobalRecommendation
 from app.models.models import CaseStatus
 from app.models.models import NoteDirectory
 from app.models.models import NoteRevisions
@@ -906,6 +907,50 @@ class IocTypeSchema(ma.SQLAlchemyAutoSchema):
         ).first()
         if client:
             raise ValidationError("IOC type name already exists", field_name="type_name")
+
+        return data
+    
+
+class GlobalRecommendationSchema(ma.SQLAlchemyAutoSchema): #TODO: complete
+    """Schema for serializing and deserializing GlobalRecommendation objects.
+
+    This schema defines the fields to include when serializing and deserializing IocType objects.
+    It includes fields for the IOC type name, description, taxonomy, validation regex, and validation expectation.
+    It also includes a method for verifying that the IOC type name is unique.
+
+    """
+    title: str = auto_field('title', required=True, validate=Length(min=2), allow_none=False)
+    description: Optional[str] = auto_field('description')
+    tags: Optional[str] = auto_field('tags')
+    class Meta:
+        model = GlobalRecommendation
+        load_instance = True
+        unknown = EXCLUDE
+
+    @post_load
+    def verify_unique(self, data: GlobalRecommendation, **kwargs: Any) -> GlobalRecommendation:
+        """Verifies that the GlobalRecommendation type name is unique.
+
+        This method verifies that the IOC type name specified in the data is unique.
+        If the name is not unique, it raises a validation error.
+
+        Args:
+            data: The data to verify.
+            kwargs: Additional keyword arguments.
+
+        Returns:
+            The verified data.
+
+        Raises:
+            ValidationError: If the IOC type name is not unique.
+
+        """
+        client = GlobalRecommendation.query.filter(
+            func.lower(GlobalRecommendation.title) == func.lower(data.title),
+            GlobalRecommendation.id != data.id
+        ).first()
+        if client:
+            raise ValidationError("Recommendation name already exists", field_name="title")
 
         return data
 
@@ -1881,7 +1926,7 @@ class TaskStatusSchema(ma.SQLAlchemyAutoSchema):
         unknown = EXCLUDE
 
 
-class CaseRecommendationSchema(ma.SQLAlchemyAutoSchema):
+class CaseRecommendationSchema(ma.SQLAlchemyAutoSchema): #TODO: complete with globalRec stuff
     """Schema for serializing and deserializing CaseRecommendation objects.
 
     This schema defines the fields to include when serializing and deserializing CaseRecommendation objects.
@@ -1890,6 +1935,7 @@ class CaseRecommendationSchema(ma.SQLAlchemyAutoSchema):
     """
     recommendation_title: str = auto_field('recommendation_title', required=True, validate=Length(min=2), allow_none=False)
     recommendation_description: Optional[str] = auto_field('recommendation_description', required=False, allow_none=True)
+    recommendation_tags: Optional[str] = auto_field(required=False, allow_none=True)
     case = ma.Nested(CaseSchema, only=['case_name', 'case_id'])
 
     class Meta:

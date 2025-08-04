@@ -1,0 +1,39 @@
+<div class="modal-header">
+    <h4>Global Recommendation</h4>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
+</div>
+<div class="modal-body">
+
+        <div class="container col-md-12">
+        <form method="post" action="" id="form_new_global_recommendation" enctype="multipart/form-data">
+            <div class="col-md-12 col-lg-12 col-sm-12">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    <label for="recommendation_title" class="mr-4">Recommendation</label>
+                    {{ form.recommendation_title(class='form-control',  autocomplete="off") }}
+                </div>
+                <div class="form-group mt-3">
+                    <label for="recommendation_description" class="placeholder">Recommendation description</label>
+                    {{ form.recommendation_description(class='form-control',  autocomplete="off") }}
+                </div>
+                <div class="form-group mt-3">
+                    <label for="recommendation_tags" class="placeholder">Tags</label>
+                    {{ form.recommendation_tags(class='form-control',  autocomplete="on") }}
+                </div>
+
+
+            {% if recommendation.id %}
+                <button type="button" class="btn btn-outline-danger mt-5" onclick="delete_recommendation('{{ recommendation.id}}');">Delete</button>
+                <button type="submit" class="btn btn-outline-success ml-4 mt-5 float-right" id="submit_new_recommendation">Update</button>
+
+            {% else %}
+
+                <button type="submit" class="btn btn-outline-success ml-4 mt-5 float-right" id="submit_new_recommendation">Save</button>
+
+            {% endif %}
+            </div>
+        </form>
+    </div>
+
+</div>

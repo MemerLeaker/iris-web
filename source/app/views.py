@@ -43,6 +43,7 @@ from app.blueprints.pages.manage.manage_cases_routes import manage_cases_bluepri
 from app.blueprints.pages.manage.manage_customers_routes import manage_customers_blueprint
 from app.blueprints.pages.manage.manage_groups_routes import manage_groups_blueprint
 from app.blueprints.pages.manage.manage_ioc_types_routes import manage_ioc_type_blueprint
+from app.blueprints.pages.manage.manage_global_recommendations_routes import manage_recommendations_blueprint
 from app.blueprints.pages.manage.manage_modules_routes import manage_modules_blueprint
 from app.blueprints.pages.manage.manage_objects_routes import manage_objects_blueprint
 from app.blueprints.pages.manage.manage_srv_settings_routes import manage_srv_settings_blueprint
@@ -131,6 +132,7 @@ def register_blueprints(app):
     app.register_blueprint(manage_analysis_status_rest_blueprint)
     app.register_blueprint(manage_ioc_type_blueprint)
     app.register_blueprint(manage_ioc_type_rest_blueprint)
+    app.register_blueprint(manage_recommendations_blueprint)
     app.register_blueprint(manage_recommendations_rest_blueprint)
     app.register_blueprint(manage_event_categories_rest_blueprint)
     app.register_blueprint(manage_objects_blueprint)
@@ -170,8 +172,8 @@ def register_blueprints(app):
     app.register_blueprint(case_graph_blueprint)
     app.register_blueprint(case_graph_rest_blueprint)
     app.register_blueprint(case_recommendations_blueprint)
-    app.register_blueprint(case_tasks_blueprint)
     app.register_blueprint(case_recommendations_rest_blueprint)
+    app.register_blueprint(case_tasks_blueprint)
     app.register_blueprint(case_tasks_rest_blueprint)
     app.register_blueprint(case_blueprint)
     app.register_blueprint(case_rest_blueprint)

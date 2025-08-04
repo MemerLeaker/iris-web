@@ -652,13 +652,16 @@ function delete_evidence_type(id) {
 
 /***    Recommendations    ***/
 
-function add_recommendation() {
-    console.log("CCCCCCCCCCCCCCCCCCC");
+function add_global_recommendation() {
     var url = '/manage/recommendations/add/modal' + case_param();
-    $('#modal_add_type_content').load(url, function () {
+    $('#modal_add_type_content').load(url, function (response, status, xhr) {
+        if (status !== "success") {
+             ajax_notify_error(xhr, url);
+             return false;
+        }
 
         $('#submit_new_recommendation').on("click", function () {
-            var form = $('form#form_new_recommendation').serializeObject();
+            var form = $('form#form_new_global_recommendation').serializeObject();
 
             post_request_api('/manage/recommendations/add', JSON.stringify(form), true)
             .done((data) => {
@@ -681,10 +684,8 @@ $('#recommendations_table').dataTable({
       "type": "GET",
       "data": function ( d ) {
         if (d.status == 'success') {
-          console.log("Data: " + JSON.stringify(d.data));
           return JSON.stringify( d.data );
         } else {
-          console.log("Error: " + JSON.stringify(d));
           return [];
         }
       }
@@ -695,8 +696,7 @@ $('#recommendations_table').dataTable({
         {
             "data": "title",
             "render": function ( data, type, row ) {
-                return '<h1>Test</h1>';
-                // return '<a href="#" onclick="recommendation_detail(\'' + row['id'] + '\');">' + sanitizeHTML(data) +'</a>';
+                return '<a href="#" onclick="recommendation_detail(\'' + row['id'] + '\');">' + sanitizeHTML(data) +'</a>';
             }
         },
         {
@@ -714,6 +714,7 @@ function refresh_recommendations_table() {
   notify_success("Refreshed");
 }
 
+/* Fetch the details of a recommendation and allow modification */
 function recommendation_detail(recommendation_id) {
     let url = '/manage/recommendations/update/' + recommendation_id + '/modal' + case_param();
     $('#modal_add_type_content').load(url, function (response, status, xhr) {
@@ -723,9 +724,11 @@ function recommendation_detail(recommendation_id) {
         }
 
         $('#submit_new_recommendation').on("click", function () {
-            var form = $('form#form_new_recommendation').serializeObject();
+            var form = $('form#form_new_global_recommendation').serializeObject();
 
-            post_request_api('/manage/recommendations/update/' + recommendation_id, JSON.stringify(form), true)
+            console.log("Form data: ", form);
+
+            post_request_api(`/manage/recommendations/update/${recommendation_id}`, JSON.stringify(form), true)
             .done((data) => {
                 if(notify_auto_api(data)) {
                     refresh_recommendations_table();
@@ -740,7 +743,7 @@ function recommendation_detail(recommendation_id) {
     });
     $('#modal_add_type').modal({ show: true });
 }
-function delete_recommendation(id) {
+function delete_recommendation(recommendation_id) {
 
     swal({
       title: "Are you sure?",
@@ -754,7 +757,7 @@ function delete_recommendation(id) {
     })
     .then((willDelete) => {
       if (willDelete) {
-            post_request_api('/manage/recommendations/delete/' + id)
+            post_request_api(`/manage/recommendations/delete/${recommendation_id}`)
             .done((data) => {
                 if(notify_auto_api(data)) {
                     refresh_recommendations_table();

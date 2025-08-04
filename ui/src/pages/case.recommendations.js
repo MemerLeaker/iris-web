@@ -17,6 +17,75 @@ function edit_in_recommendation_desc() {
     }
 }
 
+/* Fetch a modal that allows to import recommendations */
+function import_recommendation() {
+    console.log("import clicked");
+    url = 'recommendations/import/modal' + case_param();
+    $('#modal_add_recommendation_content').load(url, function (response, status, xhr) {
+        //hide_minimized_modal_box();
+        if (status !== "success") {
+            console.error("Failed to load import recommendations modal:", xhr);
+            ajax_notify_error(xhr, url);
+            return false;
+        }
+
+        console.log("first if passed");
+
+        get_request_api('/manage/recommendations/list')
+        .done((data) => {
+            if (api_request_failed(data)) {
+                console.error("Failed to fetch global recommendations:", data);
+                return;
+            }
+
+            if (data.data.length === 0) {
+                console.log("No global recommendations available.");
+                $('#import_global_recommendations').hide();
+                $('#no_global_recommendations').show();
+            } else {
+                $('#modal_import_case_recommendations').show();
+                $('#no_global_recommendations').hide();
+                console.log("Global recommendations loaded:", data.data);
+            }
+
+            $('.list-group').empty();
+            $.each(data.data, function(index, recommendation) {
+                console.log("Listing global recommendation:", recommendation.title);
+                let item = $('<a>')
+                    .addClass('list-group-item list-group-item-action')
+                    .attr('href', 'javascript:void(0);')
+                    .attr('data-recommendation_id', recommendation.id)
+                    .attr('title', `Recommendation ID #${recommendation.id} - ${recommendation.title}`)
+                    .text(recommendation.description)
+                    .on('click', function() {
+                        let recommendation_id = $(this).data('recommendation_id');
+                        let case_id = get_caseid();
+                        post_request_api(`/api/v2/cases/${case_id}/recommendations/${recommendation_id}/import`, null, true)
+                        .done((data, textStatus) => {
+                            if (textStatus === 'success') {
+                                notify_success(`Recommendation #${recommendation_id} imported successfully.`);
+                                //get_recommendations();
+                                $('#modal_import_case_recommendations').modal('show');
+                            } else {
+                                notify_error(`Error importing recommendation #${recommendation_id}.`);
+                            }
+                        });
+                    });
+                $('.list-group').append(item);
+            });
+        })
+        .fail((xhr, status, error) => {
+            console.error("Error fetching global recommendations:", error);
+            $('.list-group').html('<div class="text-danger">Error loading recommendations.</div>');
+        }
+        );
+    });
+
+    //var global_recs = get_request_api('/manage/recommendations/list'); 
+    //console.log(global_recs);
+
+   // $('#modal_import_recommendations').modal({ show: true });
+}
 
 /* Fetch a modal that allows to add an event */
 function add_recommendation() {

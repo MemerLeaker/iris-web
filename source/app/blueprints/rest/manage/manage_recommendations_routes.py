@@ -29,7 +29,7 @@ from app.datamgmt.manage.manage_recommendations_db import get_recommendation_by_
 #from app.datamgmt.manage.manage_evidence_types_db import verify_evidence_type_in_use
 from app.iris_engine.utils.tracker import track_activity
 from app.models.authorization import Permissions
-from app.schema.marshables import CaseRecommendationSchema #TODO fix with RecommendationSchema
+from app.schema.marshables import GlobalRecommendationSchema
 from app.blueprints.access_controls import ac_api_requires
 from app.blueprints.responses import response_error
 from app.blueprints.responses import response_success
@@ -46,11 +46,10 @@ def list_recommendations() -> Response:
         Flask Response object
 
     """
-    print("ici")
     l_cl = get_recommendations_list()
-
-    print(f"l_cl: {l_cl}")
-
+    if not l_cl:
+        return response_error("No recommendations available")
+    
     return response_success("", data=l_cl)
 
 
@@ -90,15 +89,25 @@ def update_recommendation(recommendation_id: int) -> Response:
         return response_error("Invalid request")
 
     recommendation = get_recommendation_by_id(recommendation_id)
+    print(recommendation.title)
 
     if not recommendation:
-        return response_error(f"Invalid evidence type ID {recommendation_id}")
+        return response_error(f"Invalid recommendation ID {recommendation_id}")
 
-    ccl = CaseRecommendationSchema()
+    ccl = GlobalRecommendationSchema()
 
     try:
+        data = request.get_json()
 
-        ccls = ccl.load(request.get_json(), instance=recommendation)
+        #remapping frontend keys to backend keys
+        if "recommendation_title" in data:
+            data["title"] = data.pop("recommendation_title")
+        if "recommendation_description" in data:
+            data["description"] = data.pop("recommendation_description")
+        if "recommendation_tags" in data:
+            data["tags"] = data.pop("recommendation_tags")
+
+        ccls = ccl.load(data, instance=recommendation)
 
         if ccls:
             track_activity(f"updated recommendation {ccls.title}")
@@ -122,11 +131,20 @@ def add_recommendation() -> Response:
     if not request.is_json:
         return response_error("Invalid request")
 
-    ccl = CaseRecommendationSchema()
+    ccl = GlobalRecommendationSchema()
 
     try:
+        data = request.get_json()
 
-        ccls = ccl.load(request.get_json())
+        #remapping frontend keys to backend keys
+        if "recommendation_title" in data:
+            data["title"] = data.pop("recommendation_title")
+        if "recommendation_description" in data:
+            data["description"] = data.pop("recommendation_description")
+        if "recommendation_tags" in data:
+            data["tags"] = data.pop("recommendation_tags")
+
+        ccls = ccl.load(data)
 
         if ccls:
             db.session.add(ccls)
@@ -183,5 +201,5 @@ def search_recommendation():
     if not recommendation:
         return response_error("No recommendation found")
 
-    schema = CaseRecommendationSchema(many=True)
+    schema = GlobalRecommendationSchema(many=True)
     return response_success("", data=schema.dump(recommendation))

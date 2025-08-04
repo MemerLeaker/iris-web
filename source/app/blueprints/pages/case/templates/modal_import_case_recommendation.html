@@ -1,0 +1,43 @@
+<div class="modal-header">
+    <h4 class="modal-title">Import Global Recommendations</h4>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true"><i class="fa fa-times"></i></span>
+    </button>
+</div>
+<div class="modal-body">
+    <form id="import_global_recommendations_form">
+        <div class="form-group">
+            <label>Select recommendations to import:</label>
+            <div class="list-group" style="max-height: 400px; overflow-y: auto;">
+                {% for recommendation in global_recommendations %}
+                <script>console.log("recommendation: ", recommendation.title);</script>
+                <label class="list-group-item">
+                    <input type="checkbox" name="recommendation_ids" value="{{ recommendation.id }}">
+                    <strong>{{ recommendation.title }}</strong>
+                    <br>
+                    <small class="text-muted">{{ recommendation.description }}</small>
+                </label>
+                {% else %}
+                <div class="text-muted">No global recommendations availablblblblbe.</div>
+                {% endfor %}
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success float-right mt-3">Import Selected</button>
+    </form>
+</div>
+<script>
+    console.log("Global recommendations modal loadeded");
+/* $('#import_global_recommendations_form').on('submit', function(e) {
+    e.preventDefault();
+    // Collect checked IDs
+    var ids = [];
+    $('input[name="recommendation_ids"]:checked').each(function() {
+        ids.push($(this).val());
+    });
+    // TODO: Send ids to backend to import into current case
+    // Example: $.post('/case/recommendations/import', {ids: ids, case_id: CURRENT_CASE_ID}, ...)
+    // Close modal or show success message as needed
+}); */
+
+</script>
+

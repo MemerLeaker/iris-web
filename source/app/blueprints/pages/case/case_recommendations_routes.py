@@ -63,6 +63,19 @@ def case_add_recommendation_modal(caseid, url_redir):
     return render_template("modal_add_case_recommendation.html", form=form, recommendation=recommendation, uid=iris_current_user.id, user_name=None,
                            attributes=recommendation.custom_attributes)
 
+@case_recommendations_blueprint.route('/case/recommendations/import/modal', methods=['GET'])
+@ac_case_requires(CaseAccessLevel.full_access)
+def case_import_recommendation_modal(caseid, url_redir):
+    if url_redir:
+        return redirect(url_for('case_recommendations.case_recommendations', cid=caseid, redirect=True))
+
+    recommendation = CaseRecommendations()
+    recommendation.custom_attributes = get_default_custom_attributes('recommendation')
+    form = CaseRecommendationForm()
+
+    return render_template("modal_import_case_recommendation.html", form=form, recommendation=recommendation, uid=iris_current_user.id, user_name=None,
+                           attributes=recommendation.custom_attributes)
+
 
 @case_recommendations_blueprint.route('/case/recommendations/<int:cur_id>/modal', methods=['GET'])
 @ac_case_requires(CaseAccessLevel.read_only, CaseAccessLevel.full_access)
