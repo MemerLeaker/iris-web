@@ -1,7 +1,6 @@
-<div class="modal-header">
+<!-- <div class="modal-header">
     <h4>Global Recommendation</h4>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 </div>
 <div class="modal-body">
 
@@ -36,4 +35,84 @@
         </form>
     </div>
 
+</div>
+
+--------------------------------------------------------------  -->
+
+<div class="modal-header">
+    <div class="col md-12">
+        <div class="row">
+            <div class="col align-self-center">
+                <h4>Global Recommendation</h4>
+            </div>
+            <!-- {% include 'modals/modal_attributes_nav.html' %} -->
+            <div class="col">
+                <div class="row float-right">
+                <button type="button" class="pull-right btn bg-transparent" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><i class="fa fa-times"></i></span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-body">
+    <div role="tabpanel">
+          <div class="tab-content">
+                <div class="tab-pane active" id="details">
+                    <div class="container col-md-12">
+                        <form method="post" action="" id="form_new_global_recommendation" enctype="multipart/form-data">
+                            <div class="col-md-12 col-lg-12 col-sm-12">
+                                {{ form.hidden_tag() }}
+                                 <div class="form-group">
+                                    <label for="recommendation_title" class="mr-4">Recommendation</label>
+                                    {{ form.recommendation_title(class='form-control col-md-12 col-sm-12',  autocomplete="off") }}
+                                </div>
+
+                                <div class="form-group mt-3">
+                                    <label for="recommendation_description" class="placeholder">Description</label>
+                                     <div class="md_description_field">
+                                        <div class="form-group mt--2">
+                                                <button type="button" class="float-right icon-note btn btn-circle btn-sm mt-2" onclick="edit_in_global_recommendation_desc();"></button>
+                                                <button type="button" style="display: none;" class="btn btn-dark btn-sm float-right mr-2 mt-2" onclick="preview_global_recommendation_description();" id="global_recommendation_preview_button"><i class="fa-solid fa-eye"></i></button>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col mb--2 ml--2" id="global_recommendation_edition_btn" style="display:none;">
+                                            </div>
+                                        </div>
+                                        <div class="row" style="margin-left:0px;">
+                                            <div class="col-12" id="container_global_recommendation_desc_content">
+                                                <div id="global_recommendation_description" contenteditable="true" spellcheck="true" class="mr-2" data-theme="{% if current_user.in_dark_mode %}dark{% else %}light{% endif %}">{% if form.recommendation_description %}{{ form.recommendation_description  }}{% endif %}</div>
+                                                <textarea id="global_recommendation_desc_content" rows="10" cols="82" style="display: none"></textarea>
+                                            </div>
+                                            <div class="col-12" id="container_global_recommendation_description" style="display:none">
+                                                <div id="target_global_recommendation_desc"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group mt-3">
+                                    <label for="recommendation_tags" class="placeholder">Tags</label>
+                                    {{ form.recommendation_tags(class='form-control',  autocomplete="on") }}
+                                </div>
+                                <!-- <div class="form-group mt-3">
+                                    <label for="recommendation_tags" class="placeholder">Tags</label>
+                                    <input type="text" id="recommendation_tags" class="form-control autocomplete='on' col-md-12" {% if form.recommendation_tags %} value="{{ form.recommendation_tags }}" {% endif %}/>
+                                </div> -->
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- {% include 'modals/modal_attributes_tabs.html' %} -->
+          </div>
+    </div>
+    {% if recommendation.id %}
+        <button type="button" class="btn btn-outline-danger mt-5" onclick="delete_recommendation('{{ recommendation.id}}');">Delete</button>
+        <button type="submit" class="btn btn-outline-success ml-4 mt-5 float-right" id="submit_new_recommendation">Update</button>
+
+    {% else %}
+
+        <button type="submit" class="btn btn-outline-success ml-4 mt-5 float-right" id="submit_new_recommendation">Save</button>
+
+    {% endif %}
 </div>

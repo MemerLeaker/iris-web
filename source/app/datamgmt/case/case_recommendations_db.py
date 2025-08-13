@@ -27,6 +27,7 @@ from app.datamgmt.manage.manage_attribute_db import get_default_custom_attribute
 from app.datamgmt.manage.manage_users_db import get_users_list_restricted_from_case
 from app.models.models import CaseRecommendations
 from app.models.cases import Cases
+from app.models.models import GlobalRecommendation
 from app.models.authorization import User
 from app.models.pagination_parameters import PaginationParameters
 
@@ -55,10 +56,10 @@ def get_recommendation(recommendation_id: int) -> CaseRecommendations:
 
 def add_recommendation(recommendation, user_id, caseid):
     recommendation.recommendation_case_id = caseid
-    recommendation.recommendation_userid_open = user_id
-    recommendation.recommendation_userid_update = user_id
+    # recommendation.recommendation_userid_open = user_id
+    # recommendation.recommendation_userid_update = user_id
 
-    recommendation.custom_attributes = recommendation.custom_attributes if recommendation.custom_attributes else get_default_custom_attributes('recommendation')
+    # recommendation.custom_attributes = recommendation.custom_attributes if recommendation.custom_attributes else get_default_custom_attributes('recommendation')
 
     db.session.add(recommendation)
     db.session.commit()
@@ -66,6 +67,18 @@ def add_recommendation(recommendation, user_id, caseid):
 
     return recommendation
 
+def import_recommendation(global_recommendation_id: int, case_id: int) -> CaseRecommendations: ##TODO
+    global_recommendation = GlobalRecommendation.getby_id(global_recommendation_id)
+    recommendation = CaseRecommendations(
+        recommendation_case_id=case_id,
+        recommendation_title=global_recommendation.recommendation_title,
+        recommendation_description=global_recommendation.recommendation_description,
+    )
+
+    db.session.add(recommendation)
+    db.session.commit()
+
+    return recommendation
 
 def delete_recommendation(recommendation_id):
     with db.session.begin_nested():

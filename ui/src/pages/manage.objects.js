@@ -1,3 +1,6 @@
+var g_recommendation_id = null;
+var g_recommendation_desc_editor = null;
+
 function add_asset_type() {
     url = '/manage/asset-type/add/modal' + case_param();
     $('#modal_add_type_content').load(url, function (response, status, xhr) {
@@ -660,8 +663,31 @@ function add_global_recommendation() {
              return false;
         }
 
+
+        g_recommendation_id = null;
+
+        g_recommendation_desc_editor = get_new_ace_editor('global_recommendation_description', 'global_recommendation_desc_content', 'target_global_recommendation_desc',
+                            function() {
+                                $('#last_saved').addClass('btn-danger').removeClass('btn-success');
+                                $('#last_saved > i').attr('class', "fa-solid fa-file-circle-exclamation");
+                            }, null);
+
+        g_recommendation_desc_editor.setOption("minLines", "6");
+        preview_global_recommendation_description(true);
+
+        headers = get_editor_headers('g_recommendation_desc_editor', null, 'global_recommendation_edition_btn');
+        $('#global_recommendation_edition_btn').append(headers);
+
+        load_menu_mod_options_modal(null, 'recommendation', $("#recommendation_modal_quick_actions"));
+        $('#modal_add_global_recommendation').modal({show:true});
+        edit_in_global_recommendation_desc();
+
         $('#submit_new_recommendation').on("click", function () {
             var form = $('form#form_new_global_recommendation').serializeObject();
+            form['recommendation_description'] = g_recommendation_desc_editor.getValue();
+            form['recommendation_tags'] = $('#recommendation_tags').val();
+
+            console.log("Form data: ", form);
 
             post_request_api('/manage/recommendations/add', JSON.stringify(form), true)
             .done((data) => {
@@ -723,8 +749,28 @@ function recommendation_detail(recommendation_id) {
              return false;
         }
 
+        g_recommendation_id = recommendation_id;
+
+        g_recommendation_desc_editor = get_new_ace_editor('global_recommendation_description', 'global_recommendation_desc_content', 'target_global_recommendation_desc',
+                            function() {
+                                $('#last_saved').addClass('btn-danger').removeClass('btn-success');
+                                $('#last_saved > i').attr('class', "fa-solid fa-file-circle-exclamation");
+                            }, null);
+
+        g_recommendation_desc_editor.setOption("minLines", "6");
+        preview_global_recommendation_description(true);
+
+        headers = get_editor_headers('g_recommendation_desc_editor', null, 'global_recommendation_edition_btn');
+        $('#global_recommendation_edition_btn').append(headers);
+
+        load_menu_mod_options_modal(recommendation_id, 'recommendation', $("#recommendation_modal_quick_actions"));
+        $('#modal_add_global_recommendation').modal({show:true});
+        edit_in_global_recommendation_desc();
+
         $('#submit_new_recommendation').on("click", function () {
             var form = $('form#form_new_global_recommendation').serializeObject();
+            form['recommendation_description'] = g_recommendation_desc_editor.getValue();
+            form['recommendation_tags'] = $('#recommendation_tags').val();
 
             console.log("Form data: ", form);
 
@@ -768,4 +814,42 @@ function delete_recommendation(recommendation_id) {
         swal("Pfew, that was close");
       }
     });
+}
+
+function edit_in_global_recommendation_desc() {
+    if($('#container_global_recommendation_desc_content').is(':visible')) {
+        $('#container_global_recommendation_description').show(100);
+        $('#container_global_recommendation_desc_content').hide(100);
+        $('#global_recommendation_edition_btn').hide(100);
+        $('#global_recommendation_preview_button').hide(100);
+    } else {
+        $('#global_recommendation_preview_button').show(100);
+        $('#global_recommendation_edition_btn').show(100);
+        $('#container_global_recommendation_desc_content').show(100);
+        $('#container_global_recommendation_description').hide(100);
+    }
+}
+
+function preview_global_recommendation_description(no_btn_update) {
+    if(!$('#container_global_recommendation_description').is(':visible')) {
+        recommendation_desc = g_recommendation_desc_editor.getValue();
+        converter = get_showdown_convert();
+        html = converter.makeHtml(do_md_filter_xss(recommendation_desc));
+        recommendation_desc_html = do_md_filter_xss(html);
+        $('#target_global_recommendation_desc').html(recommendation_desc_html);
+        $('#container_global_recommendation_description').show();
+        if (!no_btn_update) {
+            $('#recommendation_global_preview_button').html('<i class="fa-solid fa-eye-slash"></i>');
+        }
+        $('#container_global_recommendation_desc_content').hide();
+    }
+    else {
+        $('#container_global_recommendation_description').hide();
+         if (!no_btn_update) {
+            $('#recommendation_global_preview_button').html('<i class="fa-solid fa-eye"></i>');
+        }
+
+        $('#global_recommendation_preview_button').html('<i class="fa-solid fa-eye"></i>');
+        $('#container_global_recommendation_desc_content').show();
+    }
 }

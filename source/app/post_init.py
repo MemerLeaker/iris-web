@@ -63,7 +63,7 @@ from app.models.models import ReviewStatusList
 from app.models.models import EvidenceTypes
 from app.models.models import EventCategory
 from app.models.models import IocType
-from app.models.models import Recommendation
+from app.models.models import GlobalRecommendation
 from app.models.models import IrisHook
 from app.models.models import IrisModule
 from app.models.models import Languages
@@ -566,19 +566,18 @@ def create_safe_alert_status():
     create_safe(db.session, AlertStatus, status_name='Merged', status_description="Alert merged into an existing case")
     create_safe(db.session, AlertStatus, status_name='Escalated', status_description="Alert converted to a new case")
 
-def create_safe_recommendations():
-    """Creates new Recommendation objects if they do not already exist.
+def create_safe_global_recommendations():
+    """Creates new GlobalRecommendation objects if they do not already exist.
 
-    This function creates new Recommendation objects with the specified name
+    This function creates new GlobalRecommendation objects with the specified name
     and description if they do not already exist in the database.
 
     """
-    # Create new Recommendation objects for each recommendation
-    create_safe(db.session, Recommendation, title='Unspecified', description="Unspecified")
+    create_safe(db.session, GlobalRecommendation, title='Unspecified', description="Unspecified")
 
-    create_safe(db.session, Recommendation, title='Investigate', description="Investigate this IOC")
-    create_safe(db.session, Recommendation, title='Remediate', description="Remediate this IOC")
-    create_safe(db.session, Recommendation, title='Ignore', description="Ignore this IOC")
+    create_safe(db.session, GlobalRecommendation, title='Investigate', description="Investigate this IOC")
+    create_safe(db.session, GlobalRecommendation, title='Remediate', description="Remediate this IOC")
+    create_safe(db.session, GlobalRecommendation, title='Ignore', description="Ignore this IOC")
 
 def create_safe_evidence_types():
     """Creates new Evidence Types objects if they do not already exist.
@@ -1663,7 +1662,7 @@ class PostInit:
                 create_safe_alert_status()
 
                 self._logger.info("Creating global recommendations")
-                create_safe_recommendations()
+                create_safe_global_recommendations()
                 
                 self._logger.info("Creating base evidence types")
                 create_safe_evidence_types()
